@@ -59,3 +59,59 @@ exports.register = [
     });
   }
 ];
+
+exports.login = [
+  body('email')
+    .normalizeEmail({
+      gmail_remove_dots: true,
+      all_lowercase: true,
+      gmail_remove_subaddress: true
+    })
+    .isEmail()
+    .withMessage('Email must be a valid email address!'),
+  body('password')
+    .isLength({min: 3, max: 255})
+    .escape()
+    .withMessage('Password must be at least 3 characters long and max 255!'),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      req.errArray = errors.array();
+      return next('VALIDATION_ERR');
+    }
+
+    conn.promise().query(
+      'SELECT * FROM Users WHERE email = ?', [req.body.email]
+    ).then((user) => {
+      if (user[0].length == 0) {
+        return next('INCORRECT_CREDENTIALS');
+      }
+    
+      bcrypt.compare(req.body.password, user[0][0].password, (err, success) => {
+        if (err) {
+          return next(err);
+        }
+
+        if (!success) {
+          return next('INCORRECT_CREDENTIALS');
+        }
+
+        jwt.sign(
+          {id: user[0].id, username: user[0][0].username},
+          process.env.JWT_SECRET,
+          (err, token) => {
+            if (err) {
+              return next(err);
+            }
+
+            return res.json({success: true, token});
+          }
+        );
+      });
+    }).catch((err) => {
+      return next(err);
+    });
+  }
+];
