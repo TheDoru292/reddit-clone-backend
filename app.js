@@ -5,6 +5,7 @@ const express = require('express');
 const debug = require('debug');
 const logger = require('morgan');
 const createError = require('http-errors');
+require('dotenv').config();
 
 const app = express();
 const port = normalizePort(process.env.PORT || '3000');
@@ -33,6 +34,7 @@ app.use(function(err, req, res, next) {
 });
 
 const server = http.createServer(app);
+server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
