@@ -38,12 +38,20 @@ exports.createSubreddit = [
           `INSERT INTO Subreddit (
                 name,
                 type,
-                owner
+                owner,
+                created_on
             ) VALUES (
                 ?,
                 ?,
+                ?,
                 ?
-            )`, [req.body.name, req.body.type, req.user.id]
+            )`, 
+          [
+            req.body.name,
+            req.body.type,
+            req.user.id,
+            new Date().toJSON().slice(0, 19).replace('T', ' ')
+          ]
         );
 
         const [subreddit] = await conn.execute(
