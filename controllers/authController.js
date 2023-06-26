@@ -99,7 +99,7 @@ exports.login = [
         }
 
         jwt.sign(
-          {id: user[0].id, username: user[0][0].username},
+          {id: user[0][0].id, username: user[0][0].username},
           process.env.JWT_SECRET,
           (err, token) => {
             if (err) {

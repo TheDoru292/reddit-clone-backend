@@ -13,7 +13,7 @@ passport.use(
     },
     (jwtPayload, cb) => {
       return conn.query(
-        `SELECT * FROM USERS WHERE id = ${jwtPayload.id}`,
+        'SELECT * FROM Users WHERE username = ?', [jwtPayload.username],
         (err, results) => {
           if (err) {
             cb(err);
