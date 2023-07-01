@@ -1,7 +1,7 @@
 const mysql = require('mysql2/promise');
 const config = require('../config');
 
-console.log(process.env)
+console.log(process.env);
 
 async function setupDb() {
   console.log(config.db);
@@ -21,7 +21,7 @@ async function setupDb() {
         registered_on DATETIME,
         about VARCHAR(200),
         gender VARCHAR(255),
-        deleted BOOLEAN,
+        deleted BOOLEAN DEFAULT 0,
         coins INT
       )`
     );

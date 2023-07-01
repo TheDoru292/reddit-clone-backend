@@ -1,5 +1,6 @@
 const {body, validationResult} = require('express-validator');
 const mysql = require('mysql2/promise');
+const async = require('async');
 const config = require('../config');
 const conn = require('../services/db');
 
@@ -81,3 +82,7 @@ exports.createSubreddit = [
     }
   },
 ];
+
+exports.getSubreddit = (req, res, next) => {
+  console.log(req.subreddit);
+};
