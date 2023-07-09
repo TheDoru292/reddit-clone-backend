@@ -1,5 +1,5 @@
-const mysql = require('mysql2/promise');
-const config = require('../config');
+const mysql = require("mysql2/promise");
+const config = require("../config");
 
 console.log(process.env);
 
@@ -11,7 +11,6 @@ async function setupDb() {
   await conn.beginTransaction();
 
   try {
-
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Users (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,7 +25,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Users table created');
+    console.log("Users table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Subreddit (
@@ -42,7 +41,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Subreddit table created');
+    console.log("Subreddit table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Subreddit_flairs (
@@ -54,7 +53,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Subreddit flairs table created');
+    console.log("Subreddit flairs table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Subreddit_rules (
@@ -67,7 +66,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Subreddit rules table created');
+    console.log("Subreddit rules table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Subreddit_bans (
@@ -84,7 +83,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Subreddit bans table created');
+    console.log("Subreddit bans table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Subreddit_mod_log (
@@ -99,7 +98,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Subreddit mod log table created');
+    console.log("Subreddit mod log table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Moderators (
@@ -111,7 +110,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Moderators table created');
+    console.log("Moderators table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Posts (
@@ -135,7 +134,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Posts table created');
+    console.log("Posts table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Polls (
@@ -151,21 +150,21 @@ async function setupDb() {
       )`
     );
 
-    console.log('Poll table created');
+    console.log("Poll table created");
 
     await conn.execute(
       `ALTER TABLE Posts
       ADD FOREIGN KEY (poll) REFERENCES Polls(id)`
     );
 
-    console.log('Added foreign key \'poll\' referencings Polls table to Posts.');
+    console.log("Added foreign key 'poll' referencings Polls table to Posts.");
 
     await conn.execute(
       `ALTER TABLE Polls
       ADD FOREIGN KEY (post) REFERENCES Posts(id)`
     );
 
-    console.log('Added foreign key \'post\' referencings Posts table to Polls.');
+    console.log("Added foreign key 'post' referencings Posts table to Polls.");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Poll_responses (
@@ -178,7 +177,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Poll responses table created');
+    console.log("Poll responses table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Post_upvotes (
@@ -190,7 +189,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Post upvotes table created');
+    console.log("Post upvotes table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Post_downvotes (
@@ -202,7 +201,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Post downvotes table created');
+    console.log("Post downvotes table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Reports (
@@ -219,7 +218,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Reports table created');
+    console.log("Reports table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Subreddit_pinned (
@@ -231,8 +230,8 @@ async function setupDb() {
       )`
     );
 
-    console.log('Subreddit pinned table created');
-    
+    console.log("Subreddit pinned table created");
+
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Comments(
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -245,7 +244,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Comments table created');
+    console.log("Comments table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Comment_upvotes (
@@ -257,7 +256,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Comment upvotes table created');
+    console.log("Comment upvotes table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Comment_downvotes (
@@ -269,7 +268,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Comment downvotes table created');
+    console.log("Comment downvotes table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Subreddit_user_flairs (
@@ -281,7 +280,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Subreddit user flairs table created');
+    console.log("Subreddit user flairs table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS User_flairs (
@@ -296,7 +295,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('User flairs table created');
+    console.log("User flairs table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Awards (
@@ -307,7 +306,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Awards table created');
+    console.log("Awards table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Post_awards (
@@ -322,7 +321,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Post awards table created');
+    console.log("Post awards table created");
 
     conn.execute(
       `CREATE TABLE IF NOT EXISTS Replies (
@@ -338,7 +337,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Replies table created');
+    console.log("Replies table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Reply_upvotes (
@@ -350,7 +349,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Reply upvotes table created');
+    console.log("Reply upvotes table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Reply_downvotes (
@@ -362,7 +361,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Reply downvotes table created');
+    console.log("Reply downvotes table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Chats (
@@ -374,7 +373,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Chat table created');
+    console.log("Chat table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Message (
@@ -389,7 +388,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Message table created');
+    console.log("Message table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Blocked_users (
@@ -401,7 +400,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Blocked users table created');
+    console.log("Blocked users table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Private_members (
@@ -413,7 +412,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Private members table created');
+    console.log("Private members table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Saved_posts (
@@ -425,7 +424,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Saved posts table created');
+    console.log("Saved posts table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Topics (
@@ -434,7 +433,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Topics table created');
+    console.log("Topics table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Notifications (
@@ -446,7 +445,7 @@ async function setupDb() {
       )`
     );
 
-    console.log('Notifications table created');
+    console.log("Notifications table created");
 
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS Members_from_restricted_subreddits (
@@ -458,11 +457,10 @@ async function setupDb() {
       )`
     );
 
-    console.log('Members from restricted subreddits table created');
+    console.log("Members from restricted subreddits table created");
 
-    console.log('\nDatabase setup finished');
+    console.log("\nDatabase setup finished");
     process.exit(0);
-
   } catch (err) {
     await conn.rollback();
 

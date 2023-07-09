@@ -1,13 +1,13 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-require('../passport');
+require("../passport");
 
-const authRouter = require('./auth');
+const authRouter = require("./auth");
 
-const subredditRouter = require('./subbreddit');
+const subredditRouter = require("./subbreddit");
 
-router.use('/auth', authRouter);
+router.use("/auth", authRouter);
 
-router.use('/subreddit', subredditRouter);
+router.use("/subreddit", subredditRouter);
 
 module.exports = router;

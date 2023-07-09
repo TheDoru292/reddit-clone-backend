@@ -1,9 +1,9 @@
-const conn = require('./services/db');
-const passport = require('passport');
-const passportJWT = require('passport-jwt');
+const conn = require("./services/db");
+const passport = require("passport");
+const passportJWT = require("passport-jwt");
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
-require('dotenv').config();
+require("dotenv").config();
 
 passport.use(
   new JWTStrategy(
@@ -13,7 +13,8 @@ passport.use(
     },
     (jwtPayload, cb) => {
       return conn.query(
-        'SELECT * FROM Users WHERE username = ?', [jwtPayload.username],
+        "SELECT * FROM Users WHERE username = ?",
+        [jwtPayload.username],
         (err, results) => {
           if (err) {
             cb(err);
@@ -22,8 +23,8 @@ passport.use(
           if (results) {
             cb(null, results[0]);
           }
-        },
+        }
       );
-    },
+    }
   )
 );
