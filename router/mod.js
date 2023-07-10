@@ -15,4 +15,13 @@ router.post(
   mod.createPostFlair
 );
 
+router.delete(
+  "/:redditName/postflair/:flairName",
+  passport.authenticate("jwt", { session: false }),
+  helper.checkSubredditExistsAndGetId,
+  checks.checkUserIsSubredditMod,
+  checks.checkPostFlairExists,
+  mod.deletePostFlair
+);
+
 module.exports = router;

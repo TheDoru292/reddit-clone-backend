@@ -76,3 +76,39 @@ exports.createPostFlair = [
     }
   },
 ];
+
+exports.deletePostFlair = async (req, res, next) => {
+  const conn = await mysql.createConnection(config.db);
+
+  await conn.beginTransaction();
+
+  try {
+    await conn.execute(
+      `DELETE FROM Subreddit_flairs WHERE name = ? AND subreddit = ?`,
+      [req.params.flairName, req.subreddit.id]
+    );
+
+    await conn.execute(
+      `INSERT INTO Subreddit_mod_log (
+          subreddit,
+          moderator,
+          time,
+          action
+        ) VALUES (
+          ?,
+          ?,
+          '${new Date().toJSON().slice(0, 19).replace("T", " ")}',
+          'remove_flair'
+        )`,
+      [req.subreddit.id, req.user.id]
+    );
+
+    await conn.commit();
+
+    return res.json({ success: true, status: "Flair deleted" });
+  } catch (err) {
+    await conn.rollback();
+
+    next(err);
+  }
+};
