@@ -20,6 +20,11 @@ router.get(
   "/:redditName",
   passport.authenticate("jwt", { session: false }),
   helper.checkSubredditExistsAndGetId,
+  (req, res, next) => {
+    req.viewOnly = true;
+    next();
+  },
+  checks.checkSubredditTypeAndUserPerms,
   subreddit.getSubreddit
 );
 
@@ -29,6 +34,17 @@ router.post(
   helper.checkSubredditExistsAndGetId,
   checks.checkSubredditTypeAndUserPerms,
   post.createPost
+);
+
+router.get(
+  "/:redditName/postflair",
+  helper.checkSubredditExistsAndGetId,
+  (req, res, next) => {
+    req.viewOnly = true;
+    next();
+  },
+  checks.checkSubredditTypeAndUserPerms,
+  subreddit.getPostFlairs
 );
 
 module.exports = router;

@@ -89,3 +89,21 @@ exports.createSubreddit = [
 exports.getSubreddit = (req, res, next) => {
   console.log(req.subreddit);
 };
+
+exports.getPostFlairs = (req, res, next) => {
+  conn
+    .promise()
+    .query(`SELECT name, bg_color FROM Subreddit_flairs WHERE subreddit = ?`, [
+      req.subreddit.id,
+    ])
+    .then((flairs) => {
+      if (flairs[0].length == 0) {
+        return next("NO_FLAIRS");
+      }
+
+      return res.json({ success: true, flairs: flairs[0] });
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
