@@ -62,4 +62,18 @@ router.put(
   like.downvotePost
 );
 
+router.delete(
+  "/:postId/downvote",
+  passport.authenticate("jwt", { session: false }),
+  helper.checkPostExistsAndGetSubreddit,
+  (req, res, next) => {
+    req.upvotePost = false;
+    req.viewOnly = true;
+    next();
+  },
+  checks.checkSubredditTypeAndUserPerms,
+  checks.checkPostUpvotedOrDownvoted,
+  like.removePostDownvote
+);
+
 module.exports = router;

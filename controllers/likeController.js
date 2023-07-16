@@ -60,7 +60,7 @@ exports.removePostUpvote = (req, res, next) => {
         return next(err);
       });
   } else {
-    return next("POST_NOT_LIKED");
+    return next("POST_NOT_UPVOTED");
   }
 };
 
@@ -102,5 +102,24 @@ exports.downvotePost = async (req, res, next) => {
       .catch((err) => {
         return next(err);
       });
+  }
+};
+
+exports.removePostDownvote = (req, res, next) => {
+  if (req.postDownvoted) {
+    conn
+      .promise()
+      .query(`DELETE FROM Post_downvotes WHERE user = ? AND post = ?`, [
+        req.user.id,
+        req.params.postId,
+      ])
+      .then(() => {
+        return res.json({ success: true, status: "Removed post downvote" });
+      })
+      .catch((err) => {
+        return next(err);
+      });
+  } else {
+    return next("POST_NOT_DOWNVOTED");
   }
 };
