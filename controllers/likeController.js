@@ -45,6 +45,25 @@ exports.upvotePost = async (req, res, next) => {
   }
 };
 
+exports.removePostUpvote = (req, res, next) => {
+  if (req.postUpvoted) {
+    conn
+      .promise()
+      .query(`DELETE FROM Post_upvotes WHERE user = ? AND post = ?`, [
+        req.user.id,
+        req.params.postId,
+      ])
+      .then(() => {
+        return res.json({ success: true, status: "Removed post upvote" });
+      })
+      .catch((err) => {
+        return next(err);
+      });
+  } else {
+    return next("POST_NOT_LIKED");
+  }
+};
+
 exports.downvotePost = async (req, res, next) => {
   if (req.postDownvoted) {
     return next("POST_ALREADY_DOWNVOTED");
