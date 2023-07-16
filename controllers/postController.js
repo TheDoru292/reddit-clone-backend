@@ -383,3 +383,15 @@ exports.getPost = async (req, res, next) => {
     );
   }
 };
+
+exports.deletePost = (req, res, next) => {
+  conn
+    .promise()
+    .query(`UPDATE Posts SET deleted = 1 WHERE id = ?`, [req.params.postId])
+    .then(() => {
+      return res.json({ success: true, status: "Post deleted" });
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
