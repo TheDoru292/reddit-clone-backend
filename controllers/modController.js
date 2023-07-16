@@ -112,3 +112,38 @@ exports.deletePostFlair = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.deletePost = async (req, res, next) => {
+  const conn = await mysql.createConnection(config.db);
+
+  await conn.beginTransaction();
+
+  try {
+    await conn.execute(`UPDATE Posts SET deleted = 1 WHERE id = ?`, [
+      req.params.postId,
+    ]);
+
+    await conn.execute(
+      `INSERT Subreddit_mod_log (
+        subreddit,
+        moderator,
+        time,
+        action
+      ) VALUES (
+        ?,
+        ?,
+        '${new Date().toJSON().slice(0, 19).replace("T", " ")}',
+        'remove_post'
+      )`,
+      [req.subreddit.id, req.user.id]
+    );
+
+    await conn.commit();
+
+    return res.json({ success: true, status: "Post deleted" });
+  } catch (err) {
+    await conn.rollback();
+
+    return next(err);
+  }
+};

@@ -24,4 +24,12 @@ router.delete(
   mod.deletePostFlair
 );
 
+router.delete(
+  "/:redditName/post/:postId",
+  passport.authenticate("jwt", { session: false }),
+  helper.checkSubredditExistsAndGetId,
+  checks.checkUserIsSubredditMod,
+  mod.deletePost
+);
+
 module.exports = router;
