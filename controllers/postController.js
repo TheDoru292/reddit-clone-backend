@@ -3,6 +3,7 @@ const conn = require("../services/db");
 const URL = require("url").URL;
 const mysql = require("mysql2/promise");
 const config = require("../config");
+const async = require("async");
 require("dotenv").config();
 
 exports.createPost = [
@@ -260,3 +261,125 @@ exports.createPost = [
     }
   },
 ];
+
+exports.getPost = async (req, res, next) => {
+  if (!req.subreddit.poll) {
+    conn.promise().query().then().catch();
+  } else {
+    async.waterfall(
+      [
+        function (cb) {
+          conn
+            .promise()
+            .query(`SELECT * FROM Posts WHERE id = ?`, [req.params.postId])
+            .then((post) => {
+              if (post[0].length == 0) {
+                cb("NOT_FOUND");
+              }
+
+              console.log(post[0][0]);
+
+              cb(null, post[0][0]);
+            })
+            .catch((err) => {
+              cb(err);
+            });
+        },
+        function (post, cb) {
+          conn
+            .promise()
+            .query(`SELECT username FROM Users WHERE id = ?`, [post.user])
+            .then((user) => {
+              post.user = user[0][0].username;
+
+              cb(null, post);
+            })
+            .catch((err) => {
+              cb(err);
+            });
+        },
+        function (post, cb) {
+          conn
+            .promise()
+            .query(
+              `SELECT COUNT(id) AS upvotes FROM Post_upvotes WHERE post = ?`,
+              [post.id]
+            )
+            .then((result) => {
+              post.upvotes = result[0][0].upvotes;
+
+              cb(null, post);
+            })
+            .catch((err) => {
+              cb(err);
+            });
+        },
+        function (post, cb) {
+          conn
+            .promise()
+            .query(
+              `SELECT COUNT(id) AS downvotes FROM Post_downvotes WHERE post = ?`,
+              [post.id]
+            )
+            .then((result) => {
+              post.downvotes = result[0][0].downvotes;
+
+              cb(null, post);
+            })
+            .catch((err) => {
+              cb(err);
+            });
+        },
+        function (post, cb) {
+          conn
+            .promise()
+            .query(`SELECT id FROM Post_upvotes WHERE user = ? AND post = ?`, [
+              req.user.id,
+              post.id,
+            ])
+            .then((upvote) => {
+              if (upvote[0].length == 0) {
+                post.upvoted = false;
+              } else {
+                post.upvoted = true;
+              }
+
+              cb(null, post);
+            })
+            .catch((err) => {
+              cb(err);
+            });
+        },
+        function (post, cb) {
+          if (!post.upvoted) {
+            conn
+              .promise()
+              .query(`SELECT id Post_downvotes WHERE user = ? AND post = ?`, [
+                req.user.id,
+                post.id,
+              ])
+              .then((downvote) => {
+                if (downvote[0].length == 0) {
+                  post.downvoted = false;
+                } else {
+                  post.downvoted = true;
+                }
+
+                cb(null, post);
+              })
+              .catch((err) => cb(err));
+          } else {
+            cb(null, post);
+          }
+        },
+      ],
+      (err, post) => {
+        if (err) {
+          return next(err);
+        }
+
+        return res.json({ success: true, post });
+      }
+    );
+  }
+};
