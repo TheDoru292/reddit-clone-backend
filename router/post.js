@@ -20,6 +20,15 @@ router.get(
   post.getPost
 );
 
+router.put(
+  "/:postId",
+  passport.authenticate("jwt", { session: false }),
+  helper.checkPostExistsAndGetSubreddit,
+  checks.checkUserIsOp,
+  checks.checkPostIsNotUrl,
+  post.editPost
+);
+
 router.delete(
   "/:postId",
   passport.authenticate("jwt", { session: false }),

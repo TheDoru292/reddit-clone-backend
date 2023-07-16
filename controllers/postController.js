@@ -395,3 +395,33 @@ exports.deletePost = (req, res, next) => {
       return next(err);
     });
 };
+
+exports.editPost = [
+  body("content")
+    .trim()
+    .escape()
+    .isString()
+    .withMessage("Content must be string!"),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      req.errArray = errors.array();
+      return next("VALIDATION_ERR");
+    }
+
+    conn
+      .promise()
+      .query(`UPDATE Posts SET content = ? WHERE id = ?`, [
+        req.body.content,
+        req.params.postId,
+      ])
+      .then(() => {
+        return res.json({ success: true, status: "Post edited" });
+      })
+      .catch((err) => {
+        return next(err);
+      });
+  },
+];
