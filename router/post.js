@@ -20,4 +20,18 @@ router.get(
   post.getPost
 );
 
+router.put(
+  "/:postId/upvote",
+  passport.authenticate("jwt", { session: false }),
+  helper.checkPostExistsAndGetSubreddit,
+  (req, res, next) => {
+    req.upvotePost = true;
+    req.viewOnly = true;
+    next();
+  },
+  checks.checkSubredditTypeAndUserPerms,
+  checks.checkPostUpvotedOrDownvoted,
+  like.upvotePost
+);
+
 module.exports = router;
