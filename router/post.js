@@ -7,6 +7,7 @@ const checks = require("../lib/checks");
 const helper = require("../lib/helper");
 const like = require("../controllers/likeController");
 const post = require("../controllers/postController");
+const poll = require("../controllers/pollController");
 
 router.get(
   "/:postId",
@@ -91,6 +92,21 @@ router.delete(
   checks.checkSubredditTypeAndUserPerms,
   checks.checkPostUpvotedOrDownvoted,
   like.removePostDownvote
+);
+
+router.post(
+  "/:postId/poll/:pollOption",
+  passport.authenticate("jwt", { session: false }),
+  helper.checkPostExistsAndGetSubreddit,
+  (req, res, next) => {
+    req.vote = true;
+    req.viewOnly = true;
+    next();
+  },
+  checks.checkSubredditTypeAndUserPerms,
+  checks.checkPollAndOptionExists,
+  checks.checkUserAlreadyVoted,
+  poll.votePoll
 );
 
 module.exports = router;
